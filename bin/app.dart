@@ -40,7 +40,7 @@ class App {
   }
 
   void serviceView() {
-    print(Colorize('''      
+    print(greenColor('''      
 --------------------------------------------------
 |       Xizmat turlari                           |
 |                                                |
@@ -51,69 +51,65 @@ class App {
 | 3) Valyutaning valyutaga nisbati               |
 |                                                |
 | 4) Chiqish                                     |
---------------------------------------------------''').green());
-    printModel(Colorize('Xizmat turini tanlang ♻️').green());
+--------------------------------------------------'''));
+    printModel(greenColor('Xizmat turini tanlang ♻️'));
     xizmatlar(valyutaTurlari);
   }
 
   void xizmatlar(Map valyutaTurlari) {
     String xizmatTuri = stdin.readLineSync()!;
     if (xizmatTuri == "1") {
-      printModel(Colorize("Valyuta turini kiriting ♻️").green());
+      printModel(greenColor("Valyuta turini kiriting ♻️"));
       String valyutaTuri = stdin.readLineSync()!.toUpperCase();
       if (valyutaTurlari.containsKey(valyutaTuri)) {
-        printModel(
-            Colorize("1 $valyutaTuri ${valyutaTurlari[valyutaTuri]} so'm   ✅")
-                .green());
+        printModel(greenColor("1 $valyutaTuri ${valyutaTurlari[valyutaTuri]} so'm   ✅"));
         serviceView();
       } else {
-        printModel(Colorize(
-                "Valyuta turi xato kiritildi ! 🚫 \n${valyutaTurlari.keys}")
-            .red());
+        printModel(redColor("Valyuta turi xato kiritildi ! 🚫 \n${valyutaTurlari.keys}"));
         serviceView();
       }
     } else if (xizmatTuri == "2") {
-      printModel(Colorize("AQSH dollari qiymatini kiriting ♻️").green());
+      printModel(greenColor("AQSH dollari qiymatini kiriting ♻️"));
       double amountUSD = double.parse(stdin.readLineSync()!);
-      printModel(Colorize(
-              "$amountUSD AQSH dollarining so'mdagi qiymati ${(amountUSD * valyutaTurlari["USD"]).toStringAsFixed(3)} so'm  ✅")
-          .green());
+      printModel(greenColor("$amountUSD AQSH dollarining so'mdagi qiymati ${(amountUSD * valyutaTurlari["USD"]).toStringAsFixed(3)} so'm  ✅"));
       serviceView();
     } else if (xizmatTuri == "3") {
-      printModel(
-          Colorize("Valyuta turlarini probel bilan kiriting ♻️").green());
+      printModel(greenColor("Valyuta turlarini probel bilan kiriting ♻️"));
       List<String> valyutalar =
           stdin.readLineSync()!.trim().toUpperCase().split(" ");
       if (valyutaTurlari.containsKey(valyutalar[0])) {
         if (valyutaTurlari.containsKey(valyutalar[1])) {
-          printModel(Colorize(
-                  "${valyutalar[0]} ning ${valyutalar[1]} ga nisbati ${(valyutaTurlari[valyutalar[0]] / valyutaTurlari[valyutalar[1]]).toStringAsFixed(3)}  ✅")
-              .green());
+          printModel(greenColor("${valyutalar[0]} ning ${valyutalar[1]} ga nisbati ${(valyutaTurlari[valyutalar[0]] / valyutaTurlari[valyutalar[1]]).toStringAsFixed(3)}  ✅"));
           serviceView();
         } else {
-          printModel(
-              Colorize("Ikkinchi valyuta turi xato kiritildi!  🚫").red());
+          printModel(redColor("Ikkinchi valyuta turi xato kiritildi!  🚫"));
           serviceView();
         }
       } else {
-        printModel(Colorize("Birinchi valyuta turi xato kiritildi!  🚫").red());
+        printModel(redColor("Birinchi valyuta turi xato kiritildi!  🚫"));
         serviceView();
       }
     } else if (xizmatTuri == "4") {
       exit(0);
     } else {
-      printModel(Colorize("Xizmat turi noto'g'ri kiritildi  🚫").red());
+      printModel(redColor("Xizmat turi noto'g'ri kiritildi  🚫"));
       serviceView();
     }
   }
 
   void printModel(Colorize text) {
-    print(
-        Colorize('''------------------------------------------------------------
-|                                                          |''').green());
-    print("    $text");
-    print(
-        Colorize('''|                                                          |
-------------------------------------------------------------''').green());
+    print(greenColor('''------------------------------------------------------------
+|                                                          |'''));
+    print("  $text");
+    print(greenColor('''|                                                          |
+------------------------------------------------------------'''));
+  }
+
+  Colorize greenColor(String text) {
+    return Colorize(text).green();
+  }
+
+  Colorize redColor(String text) {
+    return Colorize(text).red();
   }
 }
