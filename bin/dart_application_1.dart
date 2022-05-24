@@ -1,6 +1,5 @@
-import 'game.dart';
+import 'app.dart';
+
 void main(List<String> args) {
-  Game().currencyConverter();
+  App().currencyConverter();
 }
-
-

@@ -4,7 +4,7 @@ import 'currency_model.dart';
 import 'package:http/http.dart';
 import 'package:colorize/colorize.dart';
 
-class Game {
+class App {
   Map valyutaTurlari = {};
   currencyConverter() async {
     var response =
