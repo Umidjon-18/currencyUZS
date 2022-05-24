@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
-import 'currency_model.dart';
+import 'currencyModel.dart';
 import 'package:http/http.dart';
 import 'package:colorize/colorize.dart';
 
@@ -10,13 +10,13 @@ class App {
     var response =
         await get(Uri.parse("https://cbu.uz/oz/arkhiv-kursov-valyut/json/"));
 
-    List<CurrencyModel> currency_model = [];
-    currency_model = [
+    List<CurrencyModel> currencyModel = [];
+    currencyModel = [
       for (final item in jsonDecode(response.body)) CurrencyModel.fromJson(item)
     ];
 
     double? usd, rub, eur;
-    currency_model.forEach((element) {
+    currencyModel.forEach((element) {
       if (element.ccy == "USD") usd = double.parse(element.rate!);
       if (element.ccy == "RUB") rub = double.parse(element.rate!);
       if (element.ccy == "EUR") eur = double.parse(element.rate!);
@@ -50,7 +50,9 @@ class App {
 |                                                |
 | 3) Valyutaning valyutaga nisbati               |
 |                                                |
-| 4) Chiqish                                     |
+| 4) Valyutaning boshqa valyutadagi qiymati      |
+|                                                |
+| 5) Chiqish                                     |
 --------------------------------------------------'''));
     printModel(greenColor('Xizmat turini tanlang ♻️'));
     services(currencyTypes);
@@ -62,16 +64,21 @@ class App {
       printModel(greenColor("Valyuta turini kiriting ♻️"));
       String currencyType = stdin.readLineSync()!.toUpperCase();
       if (currencyTypes.containsKey(currencyType)) {
-        printModel(greenColor("1 $currencyType ${currencyTypes[currencyType]} so'm   ✅"));
+        clear();
+        printModel(greenColor(
+            "1 $currencyType ${currencyTypes[currencyType]} so'm   ✅"));
         serviceView();
       } else {
-        printModel(redColor("Valyuta turi xato kiritildi ! 🚫 \n${currencyTypes.keys}"));
+        printModel(redColor(
+            "Valyuta turi xato kiritildi ! 🚫 \n${currencyTypes.keys}"));
         serviceView();
       }
     } else if (serviceType == "2") {
       printModel(greenColor("AQSH dollari qiymatini kiriting ♻️"));
       double amountUSD = double.parse(stdin.readLineSync()!);
-      printModel(greenColor("$amountUSD AQSH dollarining so'mdagi qiymati ${(amountUSD * currencyTypes["USD"]).toStringAsFixed(3)} so'm  ✅"));
+      clear();
+      printModel(greenColor(
+          "$amountUSD AQSH dollarining so'mdagi qiymati ${(amountUSD * currencyTypes["USD"]).toStringAsFixed(3)} so'm  ✅"));
       serviceView();
     } else if (serviceType == "3") {
       printModel(greenColor("Valyuta turlarini probel bilan kiriting ♻️"));
@@ -79,7 +86,9 @@ class App {
           stdin.readLineSync()!.trim().toUpperCase().split(" ");
       if (currencyTypes.containsKey(valyutalar[0])) {
         if (currencyTypes.containsKey(valyutalar[1])) {
-          printModel(greenColor("${valyutalar[0]} ning ${valyutalar[1]} ga nisbati ${(currencyTypes[valyutalar[0]] / currencyTypes[valyutalar[1]]).toStringAsFixed(3)}  ✅"));
+          clear();
+          printModel(greenColor(
+              "${valyutalar[0]} ning ${valyutalar[1]} ga nisbati ${(currencyTypes[valyutalar[0]] / currencyTypes[valyutalar[1]]).toStringAsFixed(3)}  ✅"));
           serviceView();
         } else {
           printModel(redColor("Ikkinchi valyuta turi xato kiritildi!  🚫"));
@@ -90,6 +99,26 @@ class App {
         serviceView();
       }
     } else if (serviceType == "4") {
+      printModel(greenColor("Birinchi valyuta turini kiring"));
+      var valyutaBir = stdin.readLineSync()!.toUpperCase();
+      if (currencyTypes.containsKey(valyutaBir)) {
+        printModel(greenColor("Ikkinchi valyuta turini kiriting"));
+        var valyutaIkki = stdin.readLineSync()!.toUpperCase();
+        if (currencyTypes.containsKey(valyutaIkki)) {
+          printModel(greenColor("Birinchi valyuta qiymatini kiriting"));
+          double amount = double.parse(stdin.readLineSync()!);
+          printModel(greenColor("$amount $valyutaBir ${(currencyTypes[valyutaBir] * amount / currencyTypes[valyutaIkki]).toStringAsFixed(2)} $valyutaIkki ga teng ✅"));
+          serviceView();
+        } else {
+          printModel(redColor("Valyuta turi xato kiritildi!  🚫"));
+          serviceView();
+        }
+      } else {
+        printModel(redColor("Valyuta turi xato kiritildi!  🚫"));
+        serviceView();
+      }
+    } else if (serviceType == "5") {
+      clear();
       exit(0);
     } else {
       printModel(redColor("Xizmat turi noto'g'ri kiritildi  🚫"));
@@ -98,11 +127,13 @@ class App {
   }
 
   void printModel(Colorize text) {
-    print(greenColor('''------------------------------------------------------------
-|                                                          |'''));
+    print(greenColor(
+        '''-----------------------------------------------------------------------
+|                                                                     |'''));
     print("  $text");
-    print(greenColor('''|                                                          |
-------------------------------------------------------------'''));
+    print(greenColor(
+        '''|                                                                     |
+-----------------------------------------------------------------------'''));
   }
 
   Colorize greenColor(String text) {
@@ -111,5 +142,9 @@ class App {
 
   Colorize redColor(String text) {
     return Colorize(text).red();
+  }
+
+  clear() {
+    print(Process.runSync("clear", [], runInShell: true).stdout);
   }
 }
